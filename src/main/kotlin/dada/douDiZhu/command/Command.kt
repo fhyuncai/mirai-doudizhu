@@ -36,14 +36,14 @@ object DouDiZhuConsoleCommand : CompositeCommand(
     "doudizhucommand", "dc"
 ) {
     @SubCommand("addadmin")
-    suspend fun ConsoleCommandSender.addAdmin(id: String) {
+    suspend fun ConsoleCommandSender.addAdmin(id: Long) {
         Config.admin.add(id)
         AbstractPermitteeId.ExactUser(id).permit(Command.permission)
         sendMessage("OK")
     }
 
     @SubCommand("addgroup")
-    suspend fun ConsoleCommandSender.addGroup(id: String) {
+    suspend fun ConsoleCommandSender.addGroup(id: Long) {
         Config.groups.add(id)
         AbstractPermitteeId.AnyMember(id).permit(Command.permission)
         sendMessage("OK")
