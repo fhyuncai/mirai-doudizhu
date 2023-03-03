@@ -30,10 +30,10 @@ data class CustomData(
         val lastTieDay = lastApplyTime / 1000 / 60 / 60 / 24
         val today = Date().time / 1000 / 60 / 60 / 24
         return if (today - lastTieDay >= 1) {
-            coins += 1000
+            coins += Config.dailyPoint//1000
             lastApplyTime = Date().time
-            "又输光了吗……喏，这是1000个point，别再输了哦"
+            "又输光了吗……喏，这是${Config.dailyPoint}个Point，别再输了哦"
         } else
-            "你今天已经领取过1000个point了，别得寸进尺了哦！"
+            "你今天已经领取过${Config.dailyPoint}个Point了，别得寸进尺了哦！"
     }
 }

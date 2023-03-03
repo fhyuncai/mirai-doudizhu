@@ -86,7 +86,7 @@ class Game(private val gameGroup: Group, private val basicBet: Int = 200) : Comp
         val job = scopedChannel.subscribeGroupMessages {
             (case("上桌") and sentFrom(gameGroup)) reply {
                 if (!sender.enough(200)) {
-                    "你的point不够200个哦，你没钱了"
+                    "你的Point不够200个哦，你没钱了"
                 } else if (table.enter(sender)) {
                     "加入成功\n当前玩家：${table.players.map { it.nick }}"
                 } else {
@@ -315,8 +315,8 @@ class Game(private val gameGroup: Group, private val basicBet: Int = 200) : Comp
             }
             reply(
                 "地主赢了\n" +
-                        "<${winner.nick}>赢得了${amount * 2}个point\n" + "\n" +
-                        "<${table.nongMin[0]}.nick>、<${table.nongMin[1].nick}>输掉了${amount}个point"
+                        "<${winner.nick}>赢得了${amount * 2}个Point\n" + "\n" +
+                        "<${table.nongMin[0]}.nick>、<${table.nongMin[1].nick}>输掉了${amount}个Point"
             )
         } else {
             table.diZhu.pay(amount * 2)
@@ -325,8 +325,8 @@ class Game(private val gameGroup: Group, private val basicBet: Int = 200) : Comp
             }
             reply(
                 "农民赢了\n" +
-                        "<${table.nongMin[0].nick}>、<${table.nongMin[1].nick}>赢得了了${amount}个point" + "\n" +
-                        "<${table.diZhu.nick}>输掉了${amount * 2}个个point\n"
+                        "<${table.nongMin[0].nick}>、<${table.nongMin[1].nick}>赢得了了${amount}个Point" + "\n" +
+                        "<${table.diZhu.nick}>输掉了${amount * 2}个个Point\n"
             )
         }
     }
