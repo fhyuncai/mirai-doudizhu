@@ -39,7 +39,7 @@ class Game(private val gameGroup: Group, private val basicBet: Int = 200) : Comp
 
     /**
      * ### 游戏的入口
-     * 在游戏被创建时，即开启一个“开始游戏”和“结束游戏”的监听。前着可以拦截二次的创建指令，后者可以随时使游戏结束。
+     * 在游戏被创建时，即开启一个“创建斗地主”和“结束斗地主”的监听。前着可以拦截二次的创建指令，后者可以随时使游戏结束。
      */
     suspend fun gameStart() {
         coroutineScope {
@@ -50,15 +50,15 @@ class Game(private val gameGroup: Group, private val basicBet: Int = 200) : Comp
 
             // 当游戏存在时拦截创建游戏的指令
             channel.subscribeGroupMessages(priority = EventPriority.HIGH) {
-                (case("创建游戏") and sentFrom(gameGroup)) reply {
+                (case("创建斗地主") and sentFrom(gameGroup)) reply {
                     this.intercept()
-                    "已经有一个游戏了"
+                    "已经有一个斗地主游戏了"
                 }
                 //强制结束游戏
                 //只有Config中的admin可以结束游戏
-                (case("结束游戏") and sentFrom(gameGroup)) {
+                (case("结束斗地主") and sentFrom(gameGroup)) {
                     if (sender.id in Config.admin) {
-                        group.sendMessage("结束成功")
+                        group.sendMessage("结束斗地主游戏成功")
                         this@Game.cancel()
                     }
                 }
@@ -86,7 +86,7 @@ class Game(private val gameGroup: Group, private val basicBet: Int = 200) : Comp
         val job = scopedChannel.subscribeGroupMessages {
             (case("上桌") and sentFrom(gameGroup)) reply {
                 if (!sender.enough(200)) {
-                    "你的Point不够200个哦，你没钱了"
+                    "你的 Point 不够 200 个哦"
                 } else if (table.enter(sender)) {
                     "加入成功\n当前玩家：${table.players.map { it.nick }}"
                 } else {
@@ -301,14 +301,14 @@ class Game(private val gameGroup: Group, private val basicBet: Int = 200) : Comp
     斗地主的获胜结算依赖CoinManager，即明乃币的管理系统。
      */
     private suspend fun settle(winner: Member) {
-        //获胜场次，总场次的变化
-        winner.douDiZhuData.winTimes += 1
+        // 总场次 +1
         for (player in table.players) {
             player.douDiZhuData.gameTimes += 1
         }
 
         val amount = basicBet * magnification
         if (winner == table.diZhu) {
+            winner.douDiZhuData.winTimes += 1
             winner.addPoints(amount * 2)
             table.nongMin.forEach {
                 it.pay(amount)
@@ -316,12 +316,13 @@ class Game(private val gameGroup: Group, private val basicBet: Int = 200) : Comp
             reply(
                 "地主赢了\n" +
                         "<${winner.nick}>赢得了${amount * 2}个Point\n" + "\n" +
-                        "<${table.nongMin[0]}.nick>、<${table.nongMin[1].nick}>输掉了${amount}个Point"
+                        "<${table.nongMin[0].nick}>、<${table.nongMin[1].nick}>输掉了${amount}个Point"
             )
         } else {
             table.diZhu.pay(amount * 2)
             table.nongMin.forEach {
                 it.addPoints(amount)
+                it.douDiZhuData.winTimes += 1
             }
             reply(
                 "农民赢了\n" +

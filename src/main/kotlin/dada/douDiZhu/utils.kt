@@ -12,7 +12,7 @@ val User.gameTimes
     get() = douDiZhuData.gameTimes
 
 val User.winRate
-    get() = winTimes.toFloat() / gameTimes.toFloat()
+    get() = "%.2f".format(winTimes.toDouble() / gameTimes.toDouble()).toDouble()
 
 val User.data
     get() = PlayerData.data.getOrPut(this.id) { CustomData() }

@@ -32,8 +32,8 @@ data class CustomData(
         return if (today - lastTieDay >= 1) {
             coins += Config.dailyPoint//1000
             lastApplyTime = Date().time
-            "又输光了吗……喏，这是${Config.dailyPoint}个Point，别再输了哦"
+            "又输光了吗……喏，这是${Config.dailyPoint}个 Point，别再输了哦"
         } else
-            "你今天已经领取过${Config.dailyPoint}个Point了，别得寸进尺了哦！"
+            "你今天已经领取过${Config.dailyPoint}个 Point 了，别得寸进尺了哦！"
     }
 }

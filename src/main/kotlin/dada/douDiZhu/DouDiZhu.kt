@@ -15,7 +15,7 @@ import net.mamoe.mirai.utils.info
 object DouDiZhu : KotlinPlugin(
     JvmPluginDescription(
         id = "dada.douDiZhu",
-        version = "1.0-SNAPSHOT",
+        version = "1.0.1",
     )
 ) {
     override fun onEnable() {
@@ -32,8 +32,19 @@ object DouDiZhu : KotlinPlugin(
         }
 
         globalEventChannel().subscribeGroupMessages {
-            case("创建游戏"){
-                //只有允许的群聊可以玩斗地主
+            case("斗地主"){
+                if (group.id in Config.groups) {
+                    subject.sendMessage("斗地主游戏说明\n" +
+                            "发送“创建斗地主”以创建游戏\n" +
+                            "创建游戏后，发送“上桌”参与游戏\n" +
+                            "当上桌人数达3人后，任意玩家发送“开始游戏”即可开始斗地主\n" +
+                            "开始游戏后，发送“/<你要出的牌>”在与 Bot 的私聊或者群聊中即可出牌（如“/56789”）\n" +
+                            "其他指令：\n" +
+                            "输入“/d beg”领取免费 Point\n" +
+                            "输入“/d me”查询 Point 数量与胜率")
+                }
+            }
+            case("创建斗地主"){
                 if (group.id in Config.groups) {
                     launch { Game(group).gameStart() }
                     subject.sendMessage("创建成功（底分：200）！发送“上桌”即可参与游戏")
